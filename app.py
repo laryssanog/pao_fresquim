@@ -112,6 +112,21 @@ def check_login():
         return redirect(url_for('login'))
     return None # Retorna None se estiver logado
 
+
+
+#Condição: O último dígito é ímpar (ultimo_digito % 2 != 0).
+#Lógica: O sistema gera um número aleatório entre 0.0 e 1.0 (random.random()).
+#Se o número aleatório for menor que 0.7 (ou seja, 70% de chance), o resultado é 'Aprovado'.
+#Caso contrário (30% de chance), o resultado é 'Negado'.
+#Este grupo tem alta chance (70%) de ser aprovado.
+#------------------------------------------------------------------------------
+#Condição: O último dígito é par (ou 0).
+#Lógica: Novamente, gera um número aleatório entre 0.0 e 1.0.
+#Se o número aleatório for menor que 0.3 (ou seja, 30% de chance), o resultado é 'Aprovado'.
+#Caso contrário (70% de chance), o resultado é 'Negado'.
+#Este grupo tem baixa chance (30%) de ser aprovado.
+#random:Gera um número de ponto flutuante (decimal).
+
 def consultar_serasa(cpf):
     """Simula a consulta ao Serasa."""
     try:
