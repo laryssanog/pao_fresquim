@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pão FresQUIM - Lista de Produtos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #F8F8F8;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: #FFF;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            font-size: 2em;
+            text-align: center;
+            color: #000;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 60px;
+            font-size: 1.1em; 
+        }
+
+        th, td {
+            border: 1px solid #DDD;
+            padding: 12px 15px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #c0c0c0; 
+            color: #0a0a0a;
+            font-weight: bold;
+            font-family: Arial, sans-serif;
+        }
+
+        tr:nth-child(even) {
+            background-color: #F9F9F9;
+        }
+
+        .actions a {
+            text-decoration: none;
+            color: #007BFF;
+            margin-right: 15px;
+            font-weight: bold;
+        }
+
+        .actions a:hover {
+            color: #0056b3;
+        }
+        
+        .back-link, .add-button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 1.2em;
+            transition: opacity 0.3s;
+        }
+
+        .back-link {
+            background-color: #EEE;
+            color: #333;
+        }
+        
+        .add-button {
+            
+            background-color: #45a049;
+            color: white;
+            float: right;
+            font-size: 1em;
+            padding: 5px 10px;
+            margin-bottom: 10px;
+        }
+        
+        /* Mensagens de sucesso/erro */
+        .message {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            text-align: center;
+        }
+        .success {
+            background-color: #D4EDDA;
+            color: #155724;
+            border: 1px solid #C3E6CB;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2><i class="fas fa-list-alt"></i> Produtos Cadastrados</h2>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="message {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <a href="{{ url_for('cadastro_produto') }}" class="add-button">
+            <i class="fas fa-plus"></i> Novo Produto
+        </a>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Código </th>
+                    <th>Nome do Produto</th>
+                    <th>Valor</th>
+                    <th>Cód. de Barras</th>
+                    <th>Data Fabricação</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for produto in produtos %}
+                <tr>
+                    <td>{{ produto.id }}</td>
+                    <td>{{ produto.nome }}</td>
+                    <td>R$ {{ "%.2f" | format(produto.valor) }}</td>
+                    <td>{{ produto.codigo_barra }}</td>
+                    <td>{{ produto.data_fabricacao }}</td>
+                    <td class="actions">
+                        <a href="{{ url_for('editar_produto', produto_id=produto.id) }}">
+                        Editar <i class="fas fa-edit"></i>
+                        </a> 
+    
+                        <a href="{{ url_for('excluir_produto', produto_id=produto.id) }}" style="color: red;"
+                        onclick="return confirm('Tem certeza que deseja excluir o produto {{ produto.nome }}? Esta ação não pode ser desfeita!');">
+                        Excluir <i class="fas fa-trash-alt"></i>
+                        </a>
+            </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6" style="text-align: center;">Nenhum produto cadastrado. Clique em "Novo Produto" para começar.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <a href="{{ url_for('menu_produtos') }}" class="back-link">
+            <i class="fas fa-arrow-left"></i> Voltar
+        </a>
+    </div>
+</body>
+</html>

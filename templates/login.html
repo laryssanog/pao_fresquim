@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pão FresQUIM - Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffffff; /* Fundo neutro */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .login-box {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 380px;
+            text-align: center;
+        }
+
+        .logo-img {
+            height: 150px; /* Tamanho razoável para login */
+            margin-bottom: 20px; /* Espaço entre a logo e o formulário */
+        }   
+        
+        h2 {
+            font-size: 2.2em;
+            color: #000;
+            margin-bottom: 30px;
+        }
+
+        label {
+            display: block;
+            font-size: 1.1em;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        input[type="text"], input[type="password"] {
+            width: 90%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #CCC;
+            border-radius: 6px;
+            font-size: 1.1em;
+        }
+
+        button {
+            background-color: #007BFF; /* Azul para ação */
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.2em;
+            width: 100%;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+        
+        .error-message {
+            color: #FF0000;
+            background-color: #F8D7DA;
+            border: 1px solid #F5C6CB;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 1em;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-box">
+        <img src="{{ url_for('static', filename='logopaofresquim.jpg') }}" alt="Logo Pão FresQUIM" class="logo-img">
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    {% if category == 'error' %}
+                        <div class="error-message">{{ message }}</div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="{{ url_for('login') }}">
+            
+            <label for="username"><i class="fas fa-user"></i> Usuário:</label>
+            <input type="text" id="username" name="username" required>
+
+            <label for="password"><i class="fas fa-lock"></i> Senha:</label>
+            <input type="password" id="password" name="password" required>
+            
+            <button type="submit">
+                <i class="fas fa-sign-in-alt"></i> Entrar
+            </button>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pão FresQUIM - Vendas por Período</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Estilos base (Mantenha consistência com lista_vendas.html) */
+        body { font-family: Arial, sans-serif; background-color: #F8F8F8; color: #333; margin: 0; padding: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; background-color: #FFF; padding: 30px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); }
+        h2 { font-size: 2em; color: #000; margin-bottom: 20px; }
+        .filter-form { display: flex; gap: 20px; margin-bottom: 30px; align-items: flex-end; }
+        .filter-form label { font-weight: bold; margin-bottom: 5px; display: block; }
+        .filter-form input[type="date"] { padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+        .filter-form button { padding: 10px 15px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; transition: background-color 0.3s; }
+        .filter-form button:hover { background-color: #1e7e34; }
+        .message { 
+        padding: 10px; 
+        border-radius: 5px; 
+        margin-bottom: 15px; 
+        text-align: center; 
+        color: #333; /* Cor do texto */
+    }
+
+    /* 2. Estilo para mensagens de Sucesso */
+    .message.success {
+        background: #d4edda; /* Cor de fundo para sucesso */
+    }
+
+    /* 3. Estilo para mensagens de Erro */
+    .message.error { 
+        background: #f8d7da; /* Cor de fundo para erro */
+    }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .total-box { margin-top: 20px; padding: 15px; background-color: #fcf1d1; color: #333; border-radius: 5px; font-size: 1.5em; font-weight: bold; text-align: right; }
+        .back-link { display: inline-block; margin-top: 20px; padding: 10px 15px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="message {{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <h2><i class="fas fa-calendar-alt"></i> Relatório de Vendas por Período</h2>
+
+        <form method="POST" class="filter-form">
+            <div class="form-group">
+                <label for="data_inicio">Data Inicial:</label>
+                <input type="date" id="data_inicio" name="data_inicio" value="{{ data_inicio or '' }}" required>
+            </div>
+            <div class="form-group">
+                <label for="data_fim">Data Final:</label>
+                <input type="date" id="data_fim" name="data_fim" value="{{ data_fim or '' }}" required>
+            </div>
+            <button type="submit"><i class="fas fa-search"></i> Gerar Relatório</button>
+        </form>
+
+        {% if vendas %}
+            <div class="total-box">
+                Total de Vendas no Período: {{ total_periodo | formatar_moeda }}
+            </div>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID Venda</th>
+                        <th>Data</th>
+                        <th>Total (R$)</th>
+                        <th>Desconto (R$)</th>
+                        <th>Cliente</th>
+                        <th>Pagamento</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for venda in vendas %}
+                    <tr>
+                        <td>{{ venda.id }}</td>
+                        <td>{{ venda.data_venda.strftime('%d/%m/%Y %H:%M') }}</td>
+                        <td style="text-align: right;">{{ venda.total_venda | formatar_moeda }}</td>
+                        <td style="text-align: right;">{{ venda.valor_desconto | formatar_moeda }}</td>
+                        <td>{{ venda.cliente.nome if venda.cliente else 'N/A' }}</td>
+                        <td>{{ venda.forma_pagamento }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% elif data_inicio and data_fim %}
+            <p style="text-align: center; margin-top: 30px;">Nenhuma venda encontrada para o período selecionado.</p>
+        {% endif %}
+
+        <a href="{{ url_for('menu_relatorios') }}" class="back-link">
+            <i class="fas fa-arrow-left"></i> Voltar aos Relatórios
+        </a>
+    </div>
+</body>
+</html>

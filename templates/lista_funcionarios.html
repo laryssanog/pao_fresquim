@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Pão FresQUIM - Lista de Funcionários</title>
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+ 
+ <style>
+    body {
+    font-family: Arial, sans-serif;
+    background-color: #F8F8F8;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+    }
+
+    .container {
+    max-width: 1000px;
+    margin: 0 auto;
+    background-color: #FFF;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+    font-size: 2em;
+    text-align: center;
+    color: #000;
+    margin-bottom: 20px;
+    }
+
+    table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 60px;
+    font-size: 1.1em; 
+    }
+
+    th, td {
+    border: 1px solid #DDD;
+    padding: 12px 15px;
+    text-align: left;
+    }
+
+    th {
+    background-color: #c0c0c0; 
+    color: #0a0a0a;
+    font-weight: bold;
+    font-family: Arial, sans-serif;
+    }
+
+    tr:nth-child(even) {
+    background-color: #F9F9F9;
+    }
+            /* Destaque para o funcionário logado */
+            .highlight {
+    background-color: #ADD8E6 !important;
+    }
+
+
+    .actions a {
+    text-decoration: none;
+    color: #007BFF;
+    margin-right: 15px;
+    font-weight: bold;
+    }
+
+    .actions a:hover {
+    color: #0056b3;
+    }
+    
+    .back-link, .add-button {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 1.2em;
+    transition: opacity 0.3s;
+    }
+
+    .back-link {
+    background-color: #EEE;
+    color: #333;
+    }
+    
+    .add-button {
+
+    background-color: #45a049;
+    color: white;
+    float: right;
+    font-size: 1em;
+    padding: 5px 10px;
+    margin-bottom: 10px;
+    }
+    
+    /* Mensagens de sucesso/erro */
+    .message {
+    margin-bottom: 20px;
+    padding: 15px;
+    border-radius: 8px;
+    font-size: 1.1em;
+    text-align: center;
+    }
+    .success {
+    background-color: #D4EDDA;
+    color: #155724;
+    border: 1px solid #C3E6CB;
+    }
+    .error {
+    background-color: #F8D7DA;
+    color: #721C24;
+    border: 1px solid #F5C6CB;
+    }
+    
+    </style>
+ <script>
+    function confirmarExclusao(nome) {
+    return confirm("Tem certeza que deseja excluir o funcionário '" + nome + "'? Esta ação é irreversível.");
+    }
+    </script>
+        </head>
+    <body>
+        <div class="container">
+        <h2><i class="fas fa-users-cog"></i> Funcionários Cadastrados</h2>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="message {{ category }}">{{ message }}</div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <a href="{{ url_for('cadastro_funcionario') }}" class="add-button">
+        <i class="fas fa-user-plus"></i> Novo Funcionário
+        </a>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome Completo</th>
+                    <th>Usuário (Login)</th>
+                    <th>Cargo</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for f in funcionarios %}
+                <tr {% if f.id == session.get('user_id') %}class="highlight"{% endif %}>
+                <td>{{ f.id }}</td>
+                <td>{{ f.nome }} {% if f.id == session.get('user_id') %}(Você - Logado){% endif %}</td>
+                <td>{{ f.username }}</td>
+                <td>{{ f.cargo }}</td>
+                <td class="actions">
+                <a href="{{ url_for('editar_funcionario', funcionario_id=f.id) }}" title="Editar {{ f.nome }}">
+                Editar <i class="fas fa-edit"></i>
+                </a> 
+                
+                {% if f.id != session.get('user_id') %}
+            <form method="POST" action="{{ url_for('excluir_funcionario', funcionario_id=f.id) }}" 
+                style="display: inline;" 
+                onsubmit="return confirmarExclusao('{{ f.nome }}');">
+                <button type="submit" style="color: red; background: none; border: none; cursor: pointer; font-size: 1em; padding: 0;">
+                        Excluir <i class="fas fa-trash-alt"></i>
+                </button>
+            </form>
+                {% else %}
+                <span style="color: #999; margin-left: 15px;" title="Não é possível excluir seu próprio usuário.">
+                Excluir <i class="fas fa-lock"></i>
+                </span>
+                {% endif %}
+                </td>
+                </tr>
+                {% else %}
+                <tr>
+                <td colspan="5" style="text-align: center;">Nenhum funcionário cadastrado. Clique em "Novo Funcionário" para começar.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <a href="{{ url_for('menu_funcionarios') }}" class="back-link">
+    <i class="fas fa-arrow-left"></i> Voltar
+    </a>
+        </div>
+    </body>
+    </html>

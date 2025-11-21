@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pão FresQUIM - Vendas</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+       body {
+            font-family: Arial, sans-serif;
+            background-color: #F8F8F8;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+         .container {
+            max-width: 800px;
+            width: 100%;
+            margin-top: 50px;
+            background-color: #FFF;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            text-align: center;
+        }
+
+       h2 {
+            font-size: 2.5em;
+            color: #000;
+            margin-bottom: 40px;
+        }
+        
+         .menu-grid {
+            display: flex;
+            justify-content: space-around;
+            gap: 30px;
+            flex-wrap: wrap; /* Para funcionar bem no celular */
+        }
+
+        .menu-item { 
+            display: block;
+            text-decoration: none;
+            background-color: #F0F0F0;
+            color: #000;
+            font-weight: bold;
+            padding: 30px 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            width: 250px; 
+        }
+
+         .menu-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+            background-color: #E0E0E0;
+        }
+        
+        .menu-item i {
+            font-size: 4em;
+            font-weight: bold;
+            color: #007BFF; /* Cor do ícone */
+            margin-bottom: 10px;
+        }
+        
+        .menu-item span {
+            font-size: 1.3em;
+            color: #333;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 40px;
+            padding: 12px 25px;
+            background-color: #EEE;
+            color: #333;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 1.2em;
+            transition: background-color 0.3s;
+        }
+        
+        .back-link:hover {
+            background-color: #DDD;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2><i class="fas fa-money-bill-wave"></i> Menu de Vendas</h2>
+        
+        <div class="menu-grid">
+
+            <a href="{{ url_for('registrar_venda') }}" class="menu-item">
+                <i class="fas fa-cash-register" style="color: #000000;"></i>
+                <p>Registrar Nova Venda</p>
+            </a>
+
+            <a href="{{ url_for('lista_vendas') }}" class="menu-item">
+                <i class="fas fa-list-alt" style="color: #000000;"></i>
+                <p>Visualizar Histórico</p>
+            </a>
+            
+        </div>
+        <a href="{{ url_for('dashboard') }}" class="back-link">
+           <i class="fa-solid fa-arrow-left" style="color: #000000;"></i> Menu Principal
+        </a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Vendas - Pão FresQUIM</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+         body {
+            font-family: Arial, sans-serif;
+            background-color: #F8F8F8;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container { 
+            max-width: 1000px; 
+            margin: 20px auto; 
+            background-color: #FFF; 
+            padding: 30px; 
+            border-radius: 10px; 
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); 
+        }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: 20px; 
+        }
+        th, td { 
+            border: 1px solid #DDD; 
+            padding: 10px; 
+            text-align: left; 
+        }
+        th { 
+            background-color: #F0F0F0; 
+        }
+        .btn { 
+            padding: 5px 10px;
+            border: none; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            font-size: 0.9em;
+        }
+        .btn-danger { 
+            background-color: #DC3545; 
+            color: white; 
+        }
+        .btn-danger:hover { 
+            background-color: #C82333; 
+        }
+        .message.success { 
+            background-color: #D4EDDA; 
+            color: #155724; 
+            border: 1px solid #C3E6CB; 
+            margin-bottom: 15px; 
+            padding: 10px; 
+            border-radius: 5px; 
+        }
+
+         .back-link, .add-button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 1.2em;
+            transition: opacity 0.3s;
+        }
+
+        .back-link {
+            background-color: #EEE;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2><i class="fas fa-list-alt"></i> Histórico de Vendas</h2>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="message {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Data</th>
+                    <th>Cliente</th>
+                    <th>Desconto</th>
+                    <th>Total</th>
+                    <th>Forma de Pagamento</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for venda in vendas %}
+                <tr>
+                    <td>{{ venda.id }}</td>
+                    <td>{{ venda.data_venda.strftime('%d/%m/%Y %H:%M') }}</td>
+                    <td>
+                        {% if venda.cliente_id %}
+                            {{ venda.cliente.nome }}
+                        {% else %}
+                            Venda no Balcão
+                        {% endif %}
+                    </td>
+                    <td>{{ venda.valor_desconto | formatar_moeda }}</td>
+                    <td>{{ venda.total_venda | formatar_moeda }}</td>
+                    <td>{{ venda.forma_pagamento }}</td>
+                    <td>
+                        <form method="POST" action="{{ url_for('excluir_venda', venda_id=venda.id) }}" 
+                              onsubmit="return confirm('Tem certeza que deseja excluir a Venda #{{ venda.id }}? Esta ação é irreversível.');"
+                              style="display: inline;">
+                            
+                            <button type="submit" class="btn btn-danger" title="Excluir Venda">
+                                <i class="fas fa-trash"></i> Excluir
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6">Nenhuma venda registrada ainda.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <p style="text-align: center; margin-top: 20px;">
+            <a href="{{ url_for('menu_vendas') }}" class="back-link">
+                <i class="fas fa-arrow-left"></i> Voltar 
+            </a>
+        </p>
+    </div>
+</body>
+</html>
