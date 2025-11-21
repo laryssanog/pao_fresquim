@@ -16,8 +16,20 @@ app = Flask(__name__)
 # ----------------------------------------------------
 # 📌 CONFIGURAÇÃO DO BANCO DE DADOS (SQLite)
 # ----------------------------------------------------
-app.secret_key = 'chave_secreta_pao_fresquim_123'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///padaria.db'
+database_url = os.environ.get('DATABASE_URL')
+
+if database_url:
+    # Render usa 'postgres://', mas o SQLAlchemy espera 'postgresql://'
+    if database_url.startswith("postgres://"):
+        database_url = database_url.replace("postgres://", "postgresql://", 1)
+    
+    app.config['SQLALCHEMY_DATABASE_URI'] = database_url
+    print("Usando PostgreSQL (Produção)")
+else:
+    # Versão local (SQLite)
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///padaria.db'
+    print("Usando SQLite (Desenvolvimento Local)")
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
